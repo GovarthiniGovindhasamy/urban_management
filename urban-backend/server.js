@@ -12,13 +12,14 @@ app.use(cors({ origin: '*' }));
 app.use(bodyParser.json({ limit: '50mb' }));
 app.use(bodyParser.urlencoded({ limit: '50mb', extended: true }));
 
-// MySQL Database Connection
+// MySQL Database Connection (use env vars on Render, fallback to local for dev)
 const db = mysql.createConnection({
-  host: 'localhost',
-  port: 3306,
-  user: 'root',
-  password: '1234',
-  database: 'urban_db'
+  host: process.env.DB_HOST || 'localhost',
+  port: parseInt(process.env.DB_PORT || '3306'),
+  user: process.env.DB_USER || 'root',
+  password: process.env.DB_PASSWORD || '1234',
+  database: process.env.DB_NAME || 'urban_db',
+  ssl: process.env.DB_HOST ? { rejectUnauthorized: false } : undefined
 });
 
 db.connect((err) => {
